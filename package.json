@@ -1,14 +1,5 @@
 {
   "name": "music-roadmap",
   "version": "1.0.0",
-  "description": "Music Roadmap Generator",
-  "scripts": {
-    "dev": "vercel dev",
-    "start": "vercel dev"
-  },
-  "dependencies": {},
-  "devDependencies": {},
-  "engines": {
-    "node": ">=14"
-  }
+  "description": "Music Roadmap Generator"
 }

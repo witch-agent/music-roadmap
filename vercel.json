@@ -3,10 +3,5 @@
   "outputDirectory": ".",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
-  ],
-  "functions": {
-    "api/ai.js": {
-      "runtime": "nodejs18.x"
-    }
-  }
+  ]
 }
