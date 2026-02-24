@@ -38,52 +38,32 @@ export default async function handler(req, res) {
         const systemPrompt = prompt.split('USER INPUTS:')[0].trim();
         const userPrompt = 'USER INPUTS:' + prompt.split('USER INPUTS:')[1];
         
-        // Create timeout controller for the API call
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
-        
         console.log('Calling MiniMax API with prompt length:', prompt.length);
         
-        let response;
-        try {
-            response = await fetch(`${MINIMAX_BASE_URL}/v1/messages`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-api-key': MINIMAX_API_KEY,
-                    'anthropic-version': '2023-06-01'
-                },
-                body: JSON.stringify({
-                    model: 'MiniMax-M2.5',
-                    max_tokens: 4096,
-                    system: systemPrompt,
-                    messages: [
-                        {
-                            role: 'user',
-                            content: [
-                                {
-                                    type: 'text',
-                                    text: userPrompt
-                                }
-                            ]
-                        }
-                    ]
-                }),
-                signal: controller.signal
-            });
-        } catch (fetchError) {
-            clearTimeout(timeoutId);
-            console.error('Fetch error:', fetchError.message);
-            if (fetchError.name === 'AbortError') {
-                return res.status(504).json({ 
-                    error: 'Request timeout',
-                    message: 'MiniMax API took too long to respond. Please try again.'
-                });
-            }
-            throw fetchError;
-        }
-        
-        clearTimeout(timeoutId);
+        const response = await fetch(`${MINIMAX_BASE_URL}/v1/messages`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-api-key': MINIMAX_API_KEY,
+                'anthropic-version': '2023-06-01'
+            },
+            body: JSON.stringify({
+                model: 'MiniMax-M2.5',
+                max_tokens: 4096,
+                system: systemPrompt,
+                messages: [
+                    {
+                        role: 'user',
+                        content: [
+                            {
+                                type: 'text',
+                                text: userPrompt
+                            }
+                        ]
+                    }
+                ]
+            })
+        });
         console.log('MiniMax API response status:', response.status);
         
         if (!response.ok) {

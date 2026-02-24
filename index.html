@@ -615,17 +615,11 @@ Format: Use clear sections with emojis. Make it inspiring but realistic.`;
                 .replace('{{TIME}}', getTimeName(time));
 
             try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second client timeout
-                
                 const response = await fetch('/api/ai', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: finalPrompt }),
-                    signal: controller.signal
+                    body: JSON.stringify({ prompt: finalPrompt })
                 });
-                
-                clearTimeout(timeoutId);
 
                 if (!response.ok) {
                     const errorData = await response.json().catch(() => ({}));
