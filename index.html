@@ -615,11 +615,22 @@ Format: Use clear sections with emojis. Make it inspiring but realistic.`;
                 .replace('{{TIME}}', getTimeName(time));
 
             try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second client timeout
+                
                 const response = await fetch('/api/ai', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ prompt: finalPrompt })
+                    body: JSON.stringify({ prompt: finalPrompt }),
+                    signal: controller.signal
                 });
+                
+                clearTimeout(timeoutId);
+
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.message || errorData.error || `خطای سرور: ${response.status}`);
+                }
 
                 const data = await response.json();
                 const content = data.response || data.message || 'خطا در دریافت پاسخ';
@@ -628,8 +639,15 @@ Format: Use clear sections with emojis. Make it inspiring but realistic.`;
             } catch (error) {
                 document.getElementById('loading').classList.remove('show');
                 document.getElementById('result').classList.add('show');
+                
+                let errorMessage = error.message;
+                if (error.name === 'AbortError') {
+                    errorMessage = 'زمان اتصال به سرور به پایان رسید. لطفاً دوباره تلاش کنید.';
+                }
+                
                 document.getElementById('roadmapContent').innerHTML = `
-                    <p style="color: var(--error);">خطا: ${error.message}</p>
+                    <p style="color: var(--error);">خطا: ${errorMessage}</p>
+                    <p style="color: var(--text-muted); margin-top: 10px;">لطفاً API key را در تنظیمات Vercel بررسی کنید</p>
                 `;
             }
         }
