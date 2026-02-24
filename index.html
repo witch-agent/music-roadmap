@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رودمپ ۳۰ روزه موسیقی</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --surface: #14141f;
+            --surface-elevated: #1e1e2e;
+            --primary: #8b5cf6;
+            --primary-hover: #7c3aed;
+            --accent: #f472b6;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #2e2e3e;
+            --success: #22c55e;
+            --radius: 16px;
+            --shadow: 0 25px 50px -12px rgba(139, 92, 246, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background */
+        .bg-pattern {
+            position: fixed;
+            inset: 0;
+            background: 
+                radial-gradient(ellipse at 20% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(244, 114, 182, 0.1) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(139, 92, 246, 0.05) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 24px 20px 60px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        .logo {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 32px;
+            box-shadow: var(--shadow);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--text), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 14px;
+            font-weight: 300;
+        }
+
+        /* Form Card */
+        .form-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px;
+            animation: fadeInUp 0.6s ease-out 0.1s both;
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+        }
+
+        .input-group:last-of-type {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 16px 18px;
+            background: var(--surface-elevated);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 15px;
+            font-weight: 400;
+            transition: all 0.3s ease;
+            appearance: none;
+        }
+
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: left 16px center;
+            background-size: 20px;
+            padding-left: 48px;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
+        }
+
+        input::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            margin-top: 28px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            border: none;
+            border-radius: 14px;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .submit-btn .icon {
+            margin-left: 8px;
+        }
+
+        /* Result Section */
+        .result-card {
+            margin-top: 32px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px;
+            display: none;
+            animation: fadeInUp 0.5s ease-out;
+        }
+
+        .result-card.show {
+            display: block;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .result-icon {
+            width: 44px;
+            height: 44px;
+            background: linear-gradient(135deg, var(--success), #16a34a);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .result-header h3 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .result-header span {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .result-content {
+            line-height: 1.9;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .result-content h4 {
+            color: var(--text);
+            font-size: 15px;
+            margin: 20px 0 10px;
+            font-weight: 600;
+        }
+
+        .result-content h4:first-child {
+            margin-top: 0;
+        }
+
+        .result-content ul {
+            padding-right: 20px;
+            margin: 10px 0;
+        }
+
+        .result-content li {
+            margin: 8px 0;
+        }
+
+        .result-content strong {
+            color: var(--primary);
+        }
+
+        /* Loading */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        .loading p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            animation: fadeIn 0.6s ease-out 0.3s both;
+        }
+
+        .footer p {
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 300;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px 16px 50px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .form-card, .result-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-pattern"></div>
+    
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">🎵</div>
+            <h1>رودمپ ۳۰ روزه</h1>
+            <p>مسیر تخصصی آهنگسازی - شخصی‌سازی شده برای تو</p>
+        </div>
+
+        <!-- Form -->
+        <div class="form-card">
+            <div class="input-group">
+                <label>سبک موسیقی</label>
+                <select id="style">
+                    <option value="" disabled selected>انتخاب کنید...</option>
+                    <option value="پاپ">پاپ</option>
+                    <option value="راک">راک</option>
+                    <option value="الکترونیک">الکترونیک / EDM</option>
+                    <option value="هیپ‌هاپ">هیپ‌هاپ</option>
+                    <option value="جاز">جاز</option>
+                    <option value="کلاسیک">کلاسیک</option>
+                    <option value="فولکlor">فولک</option>
+                    <option value="متال">متال</option>
+                    <option value="آر&بی">آر&بی</option>
+                    <option value="دریمینگ">دریمینگ / چیل‌ویو</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>سطح تجربه</label>
+                <select id="experience">
+                    <option value="" disabled selected>انتخاب کنید...</option>
+                    <option value="مبتدی">مبتدی (صفر تا ۶ ماه)</option>
+                    <option value="متوسط">متوسط (۶ ماه تا ۲ سال)</option>
+                    <option value="پیشرفته">پیشرفته (۲ تا ۵ سال)</option>
+                    <option value="حرفه‌ای">حرفه‌ای (۵+ سال)</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>هدف اصلی</label>
+                <select id="goal">
+                    <option value="" disabled selected>انتخاب کنید...</option>
+                    <option value="آهنگسازی شخصی">آهنگسازی شخصی</option>
+                    <option value="انتشار موسیقی">انتشار موسیقی در پلتفرم‌ها</option>
+                    <option value="تولید برای دیگران">تولید برای دیگران</option>
+                    <option value="یادگیری نواختن">یادگیری نوازندگی</option>
+                    <option value="تولید بیت">تولید بیت / بیت‌میکینگ</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>نام (اختیاری)</label>
+                <input type="text" id="name" placeholder="اسمت چیه؟">
+            </div>
+
+            <button class="submit-btn" onclick="generatePlan()">
+                <span class="icon">✨</span>
+                ساخت رودمپ اختصاصی
+            </button>
+        </div>
+
+        <!-- Loading -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>در حال ساخت رودمپ شخصی...</p>
+        </div>
+
+        <!-- Result -->
+        <div class="result-card" id="result">
+            <div class="result-header">
+                <div class="result-icon">✓</div>
+                <div>
+                    <h3>رودمپ شما آماده!</h3>
+                    <span>۳۰ روز اختصاصی</span>
+                </div>
+            </div>
+            <div class="result-content" id="resultContent">
+                <!-- AI Response -->
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>ساخته شده با ♥ برای آهنگسازان</p>
+        </div>
+    </div>
+
+    <script>
+        async function generatePlan() {
+            const style = document.getElementById('style').value;
+            const experience = document.getElementById('experience').value;
+            const goal = document.getElementById('goal').value;
+            const name = document.getElementById('name').value || 'دوست عزیز';
+
+            if (!style || !experience || !goal) {
+                alert('لطفاً همه فیلدهای الزامی رو پر کنید!');
+                return;
+            }
+
+            // Show loading
+            document.querySelector('.form-card').style.display = 'none';
+            document.getElementById('loading').classList.add('show');
+
+            const prompt = `You are a professional music educator and mentor with 20+ years of experience in music production, composition, and artist development.
+
+Create a detailed 30-day roadmap for someone who wants to become a musician/producer.
+
+USER PROFILE:
+- Name: ${name}
+- Music Style: ${style}
+- Experience Level: ${experience}
+- Goal: ${goal}
+
+CONTEXT:
+This person is starting their music journey (or advancing it). They need a practical, actionable plan that fits their profile.
+
+TASK:
+Create a comprehensive 30-day roadmap that includes:
+
+1. **Week 1-2: Foundation Building**
+   - Essential skills to learn
+   - Daily practice routines
+   - Tools and software recommendations
+   - Key milestones
+
+2. **Week 3-4: Skill Development**
+   - Intermediate techniques
+   - Project-based learning
+   - Practice exercises
+   - Resources (courses, tutorials, books)
+
+3. **Daily Breakdown**
+   - What to do each day (specific exercises, lessons, projects)
+   - Time commitment recommendations
+   - How to track progress
+
+4. **Tools & Resources**
+   - Software recommendations
+   - Free vs paid resources
+   - YouTube channels, courses, communities
+
+5. **Tips for Success**
+   - How to stay motivated
+   - Common mistakes to avoid
+   - How to measure progress
+
+IMPORTANT:
+- Write in Persian (Farsi)
+- Make it practical and actionable
+- Each day should have a specific task
+- Include both technical and creative aspects
+- Consider the user's experience level
+- Make it engaging and motivating
+
+Format with clear headings, bullet points, and emoji.`;
+
+            try {
+                const response = await fetch('/api/ai', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ prompt })
+                });
+
+                const data = await response.json();
+                
+                // Hide loading, show result
+                document.getElementById('loading').classList.remove('show');
+                document.getElementById('result').classList.add('show');
+                document.getElementById('resultContent').innerHTML = data.response || data.message || data.error;
+            } catch (error) {
+                // Fallback - show manual response option
+                document.getElementById('loading').classList.remove('show');
+                document.getElementById('result').classList.add('show');
+                document.getElementById('resultContent').innerHTML = `
+                    <p>برای دریافت رودمپ اختصاصی، لطفاً این اطلاعات رو برای هوش مصنوعی بفرستید:</p>
+                    <br>
+                    <div style="background: var(--surface-elevated); padding: 16px; border-radius: 12px; font-size: 13px; line-height: 1.8;">
+                        <strong>سبک:</strong> ${style}<br>
+                        <strong>تجربه:</strong> ${experience}<br>
+                        <strong>هدف:</strong> ${goal}<br>
+                        <strong>اسم:</strong> ${name}
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
