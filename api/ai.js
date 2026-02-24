@@ -101,12 +101,20 @@ export default async function handler(req, res) {
         return res.status(200).json({ response: result });
         
     } catch (error) {
-        console.error('Server error:', error.name, error.message);
+        console.error('Server error:', error.name, error.message, error.stack);
         
         if (error.name === 'AbortError') {
             return res.status(504).json({ 
                 error: 'Request timeout',
                 message: 'The request took too long. Please try again.'
+            });
+        }
+        
+        // Check if it's a network error (like failed to fetch)
+        if (error.message && error.message.includes('fetch')) {
+            return res.status(502).json({ 
+                error: 'Bad gateway',
+                message: 'Cannot connect to MiniMax API. Please check your API key and try again.'
             });
         }
         
