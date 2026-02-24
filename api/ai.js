@@ -55,7 +55,7 @@ export default async function handler(req, res) {
             },
             body: JSON.stringify({
                 model: 'MiniMax-M2.5',
-                max_tokens: 4096,
+                max_tokens: 2048,
                 system: systemPrompt,
                 messages: [
                     {
@@ -82,25 +82,27 @@ export default async function handler(req, res) {
         }
         
         const data = await response.json();
-        console.log('MiniMax API response:', JSON.stringify(data).substring(0, 200));
+        console.log('MiniMax API response:', JSON.stringify(data).substring(0, 500));
         
         // Handle different response formats
         let result = '';
         
-        // Try standard OpenAI-style response
-        if (data.choices && data.choices[0]) {
-            result = data.choices[0].message?.content || data.choices[0].text || '';
-        }
-        // Try Anthropic-style response
-        else if (data.content) {
+        // Try Anthropic-style response with thinking
+        if (data.content && Array.isArray(data.content)) {
             for (const block of data.content) {
                 if (block.type === 'text') {
                     result += block.text;
                 }
             }
         }
+        
+        // If no text found, try OpenAI-style
+        if (!result && data.choices && data.choices[0]) {
+            result = data.choices[0].message?.content || data.choices[0].text || '';
+        }
+        
         // Fallback to raw response
-        else {
+        if (!result) {
             result = JSON.stringify(data);
         }
         
