@@ -1,7 +1,7 @@
 // Vercel API Route for Music Roadmap Generator
 // MiniMax M2.5 API
 
-const MINIMAX_API_KEY = process.env.MINIMAX_API_KEY;
+const MINIMAX_API_KEY = process.env.MINIMAX_API_KEY || process.env.ANTHROPIC_API_KEY;
 const MINIMAX_BASE_URL = process.env.ANTHROPIC_BASE_URL || 'https://api.minimax.io/anthropic';
 
 export default async function handler(req, res) {
