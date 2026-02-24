@@ -263,12 +263,16 @@
 
         /* Roadmap Sections */
         .roadmap-section {
-            background: var(--surface-elevated);
-            border-radius: 14px;
+            background: rgba(30, 30, 46, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            border-radius: 16px;
             padding: 20px;
             margin-bottom: 16px;
             border-right: 4px solid var(--primary);
             animation: slideIn 0.4s ease-out both;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
 
         .roadmap-section:nth-child(2) { border-color: #8b5cf6; animation-delay: 0.1s; }
@@ -498,31 +502,30 @@
     </div>
 
     <script>
-        const prompt = `You are a world-class Music Education Consultant with 25+ years of experience in music production, composition, and artist development.
+        const prompt = `You are a world-class Music Education Consultant with 25+ years of experience.
 
-Create a detailed 6-stage roadmap for a {{EXPERIENCE}} level musician who wants to achieve {{GOAL}} in {{STYLE}} genre, with {{TIME}} available daily.
+Create a 6-stage roadmap for a {{EXPERIENCE}} level person who wants {{GOAL}} in {{STYLE}} genre, {{TIME}} daily.
 
-STRICT OUTPUT FORMAT (JSON-like with STAGE markers):
+STRICT FORMAT - Use this exact format:
 
-STAGE|1|عنوان مرحله|توضیح کوتاه
-- اهداف: هدف 1، هدف 2
-- ابزارها: ابزار 1، ابزار 2
-- منابع: منبع 1 (لینک)
-- فعالیت‌های روزانه:
-  - روز اول: فعالیت
-  - روز دوم: فعالیت
+STAGE|1|عنوان - هفته ۱-۲|توضیح کوتاه
+- اهداف: هدف ۱، هدف ۲
+- ابزارها: ابزار ۱، ابزار ۲
+- ساعت تمرین: X ساعت روزانه
+- منابع: منبع ۱، منبع ۲
+- تمرینات: تمرین ۱، تمرین ۲، تمرین ۳
+- ارزیابی: چگونه پیشرفت را اندازه‌گیری کنیم
 - نکته: نکته طلایی
 
-STAGE|2|عنوان مرحله|توضیح کوتاه
-... (similar format for all 6 stages)
+STAGE|2|عنوان - هفته ۳-۴|توضیح
+... (ادامه با همین فرمت برای ۶ مرحله)
 
 REQUIREMENTS:
 1. Write in Persian (Farsi)
-2. Each stage must be separated by "STAGE|X|" marker
-3. Use clear structure with: goals, tools, resources, daily activities, tips
-4. Make it actionable
-5. Include specific tool names and YouTube channels
-6. Content must match their experience level`;
+2. Include week numbers: هفته ۱-۲، هفته ۳-۴، هفته ۵-۶، هفته ۷-۸، هفته ۹-۱۰، هفته ۱۱-۱۲
+3. Each stage must have: goals, tools, practice hours, resources, exercises, assessment method, tips
+4. Make it practical and personalized for their level
+5. Include specific tools, YouTube channels, courses`;
 
         function getStyleName(value) {
             const names = {
@@ -634,6 +637,9 @@ REQUIREMENTS:
             document.getElementById('loading').classList.remove('show');
             document.getElementById('result').classList.add('show');
             
+            console.log('Raw content length:', content.length);
+            console.log('Content preview:', content.substring(0, 500));
+            
             let html = '';
             
             // Try to parse STAGE markers
@@ -650,15 +656,19 @@ REQUIREMENTS:
                 // Parse the stage content
                 const goalsMatch = stageContent.match(/- اهداف:\s*([^\n]+)/);
                 const toolsMatch = stageContent.match(/- ابزارها:\s*([^\n]+)/);
+                const timeMatch = stageContent.match(/- ساعت تمرین:\s*([^\n]+)/);
                 const resourcesMatch = stageContent.match(/- منابع:\s*([^\n]+)/);
+                const exercisesMatch = stageContent.match(/- تمرینات:\s*([^\n]+)/);
+                const assessmentMatch = stageContent.match(/- ارزیابی:\s*([^\n]+)/);
                 const tipsMatch = stageContent.match(/- نکته:\s*([^\n]+)/);
-                const activitiesMatch = stageContent.match(/فعالیت‌های روزانه:([\s\S]*?)(?=- |$)/);
                 
                 const goals = goalsMatch ? goalsMatch[1] : '';
                 const tools = toolsMatch ? toolsMatch[1] : '';
+                const time = timeMatch ? timeMatch[1] : '';
                 const resources = resourcesMatch ? resourcesMatch[1] : '';
+                const exercises = exercisesMatch ? exercisesMatch[1] : '';
+                const assessment = assessmentMatch ? assessmentMatch[1] : '';
                 const tips = tipsMatch ? tipsMatch[1] : '';
-                const activities = activitiesMatch ? activitiesMatch[1].trim() : '';
                 
                 html += `
                     <div class="roadmap-section">
@@ -669,9 +679,11 @@ REQUIREMENTS:
                         <div class="section-content">
                             ${goals ? `<p><strong>🎯 اهداف:</strong> ${goals}</p>` : ''}
                             ${tools ? `<p><strong>🛠️ ابزارها:</strong> ${tools}</p>` : ''}
+                            ${time ? `<p><strong>⏰ ساعت تمرین:</strong> ${time}</p>` : ''}
+                            ${exercises ? `<p><strong>💪 تمرینات:</strong> ${exercises}</p>` : ''}
                             ${resources ? `<p><strong>📚 منابع:</strong> ${resources}</p>` : ''}
-                            ${tips ? `<p class="tip">${tips}</p>` : ''}
-                            ${activities ? `<div class="activities"><strong>📋 فعالیت‌های روزانه:</strong><br>${activities.replace(/\n/g, '<br>')}</div>` : ''}
+                            ${assessment ? `<p><strong>📐 ارزیابی:</strong> ${assessment}</p>` : ''}
+                            ${tips ? `<p class="tip">💡 ${tips}</p>` : ''}
                         </div>
                     </div>
                 `;
