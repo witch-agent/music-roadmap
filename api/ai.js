@@ -27,10 +27,10 @@ export default async function handler(req, res) {
         }
         
         if (!MINIMAX_API_KEY) {
-            console.error('MINIMAX_API_KEY is not set in environment variables');
+            console.error('API key not found. Available env vars:', Object.keys(process.env).filter(k => k.includes('API')));
             return res.status(500).json({ 
                 error: 'API key not configured',
-                message: 'Please set MINIMAX_API_KEY in Vercel environment variables'
+                message: 'لطفاً در Vercel متغیر ANTHROPIC_API_KEY یا MINIMAX_API_KEY را تنظیم کنید'
             });
         }
         
