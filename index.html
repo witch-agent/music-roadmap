@@ -344,6 +344,24 @@
         .section-content .tip::before {
             content: "💡 ";
         }
+        
+        .section-content .activities {
+            background: var(--surface);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 12px;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+        
+        .section-content p {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+        
+        .section-content strong {
+            color: var(--primary);
+        }
 
         /* Footer */
         .footer {
@@ -480,68 +498,31 @@
     </div>
 
     <script>
-        const prompt = `You are a world-class Music Education Consultant with 25+ years of experience in music production, composition, and artist development. You've worked with major record labels and helped thousands of artists achieve their dreams.
+        const prompt = `You are a world-class Music Education Consultant with 25+ years of experience in music production, composition, and artist development.
 
-You receive structured inputs from a user and must generate a detailed, personalized 6-stage roadmap.
+Create a detailed 6-stage roadmap for a {{EXPERIENCE}} level musician who wants to achieve {{GOAL}} in {{STYLE}} genre, with {{TIME}} available daily.
 
-USER INPUTS:
-- Music Style: {{STYLE}}
-- Experience Level: {{EXPERIENCE}}
-- Goal: {{GOAL}}
-- Daily Time: {{TIME}}
+STRICT OUTPUT FORMAT (JSON-like with STAGE markers):
 
-CONTEXT:
-This is a personalized roadmap for someone at their specific level who wants to achieve a specific goal in a specific genre. They have limited time each day.
+STAGE|1|عنوان مرحله|توضیح کوتاه
+- اهداف: هدف 1، هدف 2
+- ابزارها: ابزار 1، ابزار 2
+- منابع: منبع 1 (لینک)
+- فعالیت‌های روزانه:
+  - روز اول: فعالیت
+  - روز دوم: فعالیت
+- نکته: نکته طلایی
 
-YOUR TASK:
-Generate a comprehensive 6-stage roadmap with these sections:
-
-## Stage 1: Foundation (هفته ۱-۲)
-- Core skills to master
-- Essential knowledge
-- Tools & software basics
-- Daily practice routine
-
-## Stage 2: Skill Building (هفته ۳-۴)
-- Intermediate techniques
-- Genre-specific knowledge
-- Practice exercises
-- Project work
-
-## Stage 3: Technique Mastery (هفته ۵-۶)
-- Advanced techniques
-- Style-specific skills
-- Production workflows
-- Quality benchmarks
-
-## Stage 4: Real-World Practice (هفته ۷-۸)
-- Building actual tracks
-- Collaboration
-- Getting feedback
-- Iterating
-
-## Stage 5: Portfolio Development (هفته ۹-۱۰)
-- Creating release-ready tracks
-- Branding
-- Positioning
-- Building presence
-
-## Stage 6: Launch & Growth (هفته ۱۱-۱۲)
-- Release strategy
-- Marketing basics
-- Audience building
-- Next steps
+STAGE|2|عنوان مرحله|توضیح کوتاه
+... (similar format for all 6 stages)
 
 REQUIREMENTS:
-1. Write entirely in Persian (Farsi) with Persian headings
-2. Each stage must include: title, description, specific tasks, recommended resources
-3. Time recommendation must match their daily time input
-4. Content must match their experience level (don't suggest advanced stuff to beginners)
-5. Include specific tool names, YouTube channels, courses
-6. Add tips specific to their genre/style
-7. Make it actionable with daily/weekly tasks
-
-Format: Use clear sections with emojis. Make it inspiring but realistic.`;
+1. Write in Persian (Farsi)
+2. Each stage must be separated by "STAGE|X|" marker
+3. Use clear structure with: goals, tools, resources, daily activities, tips
+4. Make it actionable
+5. Include specific tool names and YouTube channels
+6. Content must match their experience level`;
 
         function getStyleName(value) {
             const names = {
@@ -653,30 +634,69 @@ Format: Use clear sections with emojis. Make it inspiring but realistic.`;
             document.getElementById('loading').classList.remove('show');
             document.getElementById('result').classList.add('show');
             
-            // Split content by stages and render
-            const sections = content.split(/##\s+/).filter(s => s.trim());
-            
             let html = '';
-            sections.forEach((section, index) => {
-                if (section.toLowerCase().includes('stage')) {
-                    const parts = section.split('\n');
-                    const title = parts[0].trim();
-                    const body = parts.slice(1).join('\n');
-                    
-                    html += `
-                        <div class="roadmap-section">
-                            <div class="section-header">
-                                <div class="section-number">${index + 1}</div>
-                                <div class="section-title">${title}</div>
-                            </div>
-                            <div class="section-content">${formatContent(body)}</div>
+            
+            // Try to parse STAGE markers
+            const stageRegex = /STAGE\|(\d+)\|([^|]+)\|([\s\S]*?)(?=STAGE\|\d+\||$)/g;
+            let match;
+            let hasStages = false;
+            
+            while ((match = stageRegex.exec(content)) !== null) {
+                hasStages = true;
+                const stageNum = match[1];
+                const stageTitle = match[2].trim();
+                const stageContent = match[3].trim();
+                
+                // Parse the stage content
+                const goalsMatch = stageContent.match(/- اهداف:\s*([^\n]+)/);
+                const toolsMatch = stageContent.match(/- ابزارها:\s*([^\n]+)/);
+                const resourcesMatch = stageContent.match(/- منابع:\s*([^\n]+)/);
+                const tipsMatch = stageContent.match(/- نکته:\s*([^\n]+)/);
+                const activitiesMatch = stageContent.match(/فعالیت‌های روزانه:([\s\S]*?)(?=- |$)/);
+                
+                const goals = goalsMatch ? goalsMatch[1] : '';
+                const tools = toolsMatch ? toolsMatch[1] : '';
+                const resources = resourcesMatch ? resourcesMatch[1] : '';
+                const tips = tipsMatch ? tipsMatch[1] : '';
+                const activities = activitiesMatch ? activitiesMatch[1].trim() : '';
+                
+                html += `
+                    <div class="roadmap-section">
+                        <div class="section-header">
+                            <div class="section-number">${stageNum}</div>
+                            <div class="section-title">${stageTitle}</div>
                         </div>
-                    `;
-                }
-            });
+                        <div class="section-content">
+                            ${goals ? `<p><strong>🎯 اهداف:</strong> ${goals}</p>` : ''}
+                            ${tools ? `<p><strong>🛠️ ابزارها:</strong> ${tools}</p>` : ''}
+                            ${resources ? `<p><strong>📚 منابع:</strong> ${resources}</p>` : ''}
+                            ${tips ? `<p class="tip">${tips}</p>` : ''}
+                            ${activities ? `<div class="activities"><strong>📋 فعالیت‌های روزانه:</strong><br>${activities.replace(/\n/g, '<br>')}</div>` : ''}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // If no STAGE markers found, try the old format
+            if (!hasStages) {
+                const sections = content.split(/##\s+|مرحله\s*\d+/i).filter(s => s.trim());
+                
+                sections.forEach((section, index) => {
+                    if (index < 6 && section.trim()) {
+                        html += `
+                            <div class="roadmap-section">
+                                <div class="section-header">
+                                    <div class="section-number">${index + 1}</div>
+                                    <div class="section-title">مرحله ${index + 1}</div>
+                                </div>
+                                <div class="section-content">${formatContent(section)}</div>
+                            </div>
+                        `;
+                    }
+                });
+            }
             
             if (!html) {
-                // If no stage splitting worked, just show content
                 html = `<div class="roadmap-section">
                     <div class="section-content">${formatContent(content)}</div>
                 </div>`;
