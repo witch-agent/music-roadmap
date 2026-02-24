@@ -2,7 +2,7 @@
 // MiniMax M2.5 API
 
 const MINIMAX_API_KEY = process.env.MINIMAX_API_KEY;
-const MINIMAX_BASE_URL = 'https://api.minimax.chat/v1';
+const MINIMAX_BASE_URL = process.env.ANTHROPIC_BASE_URL || 'https://api.minimax.io/anthropic';
 
 export default async function handler(req, res) {
     console.log('Request received:', { method: req.method, headers: req.headers });
@@ -46,23 +46,26 @@ export default async function handler(req, res) {
         
         let response;
         try {
-            response = await fetch(`${MINIMAX_BASE_URL}/messages`, {
+            response = await fetch(`${MINIMAX_BASE_URL}/v1/messages`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${MINIMAX_API_KEY}`
+                    'x-api-key': MINIMAX_API_KEY,
+                    'anthropic-version': '2023-06-01'
                 },
                 body: JSON.stringify({
-                    model: 'MiniMax-Text-01',
+                    model: 'MiniMax-M2.5',
                     max_tokens: 4096,
+                    system: systemPrompt,
                     messages: [
                         {
-                            role: 'system',
-                            content: systemPrompt
-                        },
-                        {
                             role: 'user',
-                            content: userPrompt
+                            content: [
+                                {
+                                    type: 'text',
+                                    text: userPrompt
+                                }
+                            ]
                         }
                     ]
                 }),
