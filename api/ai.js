@@ -5,7 +5,12 @@ const MINIMAX_API_KEY = process.env.MINIMAX_API_KEY || process.env.ANTHROPIC_API
 const MINIMAX_BASE_URL = process.env.ANTHROPIC_BASE_URL || 'https://api.minimax.io/anthropic';
 
 export default async function handler(req, res) {
-    console.log('Request received:', { method: req.method, headers: req.headers });
+    console.log('Request received:', { method: req.method, url: req.url });
+    console.log('Environment check:', { 
+        hasMinimaxKey: !!process.env.MINIMAX_API_KEY, 
+        hasAnthropicKey: !!process.env.ANTHROPIC_API_KEY,
+        nodeEnv: process.env.NODE_ENV 
+    });
     
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
