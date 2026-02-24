@@ -40,7 +40,7 @@ export default async function handler(req, res) {
         
         // Create timeout controller for the API call
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 25000); // 25 second timeout
+        const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
         
         console.log('Calling MiniMax API with prompt length:', prompt.length);
         

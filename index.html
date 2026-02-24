@@ -616,7 +616,7 @@ Format: Use clear sections with emojis. Make it inspiring but realistic.`;
 
             try {
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second client timeout
+                const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second client timeout
                 
                 const response = await fetch('/api/ai', {
                     method: 'POST',
