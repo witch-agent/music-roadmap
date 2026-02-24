@@ -617,7 +617,10 @@ Format: Use clear sections with emojis. Make it inspiring but realistic.`;
             try {
                 const response = await fetch('/api/ai', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
                     body: JSON.stringify({ prompt: finalPrompt })
                 });
 
